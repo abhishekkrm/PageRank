@@ -32,7 +32,7 @@ public class NodeWritable implements Writable{
 		}
 	}
 	
-	public double getmCurrentPageRank() {
+	public double getCurrentPageRank() {
 		return mCurrentPageRank;
 	}
 

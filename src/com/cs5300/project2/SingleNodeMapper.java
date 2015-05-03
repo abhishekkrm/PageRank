@@ -19,7 +19,7 @@ protected void map(
 	
 	for(int neighbour: node.getNeighbours()) {
 		NodeWritable deltaPRNode = new NodeWritable();
-		deltaPRNode.setDeltaPageRank(node.getmCurrentPageRank()/node.getOutDegree());
+		deltaPRNode.setDeltaPageRank(node.getCurrentPageRank()/node.getOutDegree());
 		context.write(new IntWritable(neighbour), deltaPRNode);
 	}
 }

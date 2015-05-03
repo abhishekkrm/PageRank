@@ -24,7 +24,7 @@ protected void reduce(IntWritable key, Iterable<NodeWritable> values,
 	}
 	
 	double nextPageRank = (1-Constants.kDampingFactor)/(Constants.kNumNodes) + Constants.kDampingFactor*sumDeltaPR;
-	double residual = Math.abs(node.getmCurrentPageRank() - nextPageRank)/nextPageRank;
+	double residual = Math.abs(node.getCurrentPageRank() - nextPageRank)/nextPageRank;
 	
 	/* Update counter */
 	context.getCounter(SingleNodeRunner.CounterType.RESIDUAL).increment((long)(residual*Math.pow(10, 5)));
