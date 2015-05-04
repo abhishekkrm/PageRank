@@ -45,13 +45,11 @@ public class PreProcessor {
 				String nodeDescription = Integer.toString(node);
 				nodeDescription = nodeDescription + ":" + Double.toString(initialPageRank);
 				
-				List<Integer> neighbours = inSelectedEdges.getOrDefault(node, null);
-				if(neighbours != null) {
-					nodeDescription = nodeDescription + ":" + Integer.toString(neighbours.size());
-					
-					for(Integer neighbour: neighbours) {
-						nodeDescription = nodeDescription + ":" + Integer.toString(neighbour);
-					}
+				List<Integer> neighbours = inSelectedEdges.containsKey(node)?  inSelectedEdges.get(node): new ArrayList<Integer>();
+				nodeDescription = nodeDescription + ":" + Integer.toString(neighbours.size());
+				
+				for(Integer neighbour: neighbours) {
+					nodeDescription = nodeDescription + ":" + Integer.toString(neighbour);
 				}
 				outputFileWriter.write(nodeDescription + "\n");	
 			}

@@ -33,7 +33,7 @@ public class BlockedPRReducer extends Reducer<LongWritable, NodeWritable, NullWr
 			
 			/* Probability mass within the same block */
 			double probMass = nextPageRanks.get(node.getNodeID());
-			List<Integer> inComingNodesWithinBlock = inReverseEdgeMapping.getOrDefault(node.getNodeID(), new ArrayList<Integer>());
+			List<Integer> inComingNodesWithinBlock = inReverseEdgeMapping.containsKey(node.getNodeID()) ? inReverseEdgeMapping.get(node.getNodeID()) : new ArrayList<Integer>();
 			
 			for(int incomingNodeID: inComingNodesWithinBlock) {
 				NodeWritable incomingNode = inNodesInBlock.get(incomingNodeID);
@@ -41,7 +41,7 @@ public class BlockedPRReducer extends Reducer<LongWritable, NodeWritable, NullWr
 			}
 			
 			/* Probability mass from outside */
-			probMass += inIncomingProbMass.getOrDefault(node.getNodeID(), 0.0);
+			probMass += inIncomingProbMass.containsKey(node.getNodeID()) ? inIncomingProbMass.get(node.getNodeID()): 0.0;
 			
 			/* updated page rank of this node */
 			double updatedPageRank = Constants.kDampingFactor*probMass + (1-Constants.kDampingFactor)/Constants.kNumNodes;
@@ -66,7 +66,10 @@ public class BlockedPRReducer extends Reducer<LongWritable, NodeWritable, NullWr
 			startPageRanks.put(node.getNodeID(), node.getCurrentPageRank());
 		}
 		
-		for(double blockResidual = 1.0f; blockResidual < Constants.kInBlockResidualThreshold; blockResidual = IterateBlockOnce(inNodesInBlock, inIncomingProbMass, inReverseEdgeMapping));
+		int iterations = 0;
+		for(double blockResidual = 1.0f; blockResidual >= Constants.kInBlockResidualThreshold && iterations < Constants.kInBlockMaxkIterations; ++iterations) {
+			blockResidual = IterateBlockOnce(inNodesInBlock, inIncomingProbMass, inReverseEdgeMapping);
+		}
 		
 		double overallBlockResidual = 0.0;
 		for(NodeWritable node: inNodesInBlock.values()) {
@@ -92,7 +95,7 @@ public class BlockedPRReducer extends Reducer<LongWritable, NodeWritable, NullWr
 					AddReverseEdge(reverseEdgeMapping, n.getNodeID(), neighbour);
 				}
 			} else {
-				double probMass = incomingProbMass.getOrDefault(n.getNodeID(), 0.0);
+				double probMass = incomingProbMass.containsKey(n.getNodeID()) ? incomingProbMass.get(n.getNodeID()): 0.0;
 				probMass += n.getDeltaPageRank();
 				incomingProbMass.put(n.getNodeID(), probMass);
 			}

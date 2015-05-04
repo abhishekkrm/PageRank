@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
@@ -23,7 +23,7 @@ public class BlockedPRRunner {
 		}
 		
 		String inputFile = args[0];
-		String outputFolder = args[1];
+		String outputFolderName = args[1];
 		
 		int exitCode = 0;
 		double residualValue = 1.0;
@@ -33,13 +33,13 @@ public class BlockedPRRunner {
 			job.setMapperClass(BlockedPRMapper.class);
 			job.setReducerClass(BlockedPRReducer.class);
 			
-			job.setMapOutputKeyClass(IntWritable.class);
+			job.setMapOutputKeyClass(LongWritable.class);
 			job.setMapOutputValueClass(NodeWritable.class);
 			
 			job.setOutputKeyClass(NullWritable.class);
 			job.setOutputValueClass(Text.class);
 			
-			outputFolder = outputFolder + iteration;
+			String outputFolder = outputFolderName + iteration;
 			FileInputFormat.addInputPath((JobConf) job.getConfiguration(), new Path(inputFile));
 			FileOutputFormat.setOutputPath((JobConf) job.getConfiguration(), new Path(outputFolder));
 			inputFile = outputFolder + "/part-r-00000";

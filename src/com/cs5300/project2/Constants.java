@@ -9,6 +9,7 @@ public class Constants {
 	
 	public static int kBlockedPRMaxIterations = 10;
 	public static int kSingleNodePRMaxIterations = 6;
+	public static int kInBlockMaxkIterations  = 10;
 	
 	public static String kBlockFileURL = "http://edu-cornell-cs-cs5300s15-proj2.s3.amazonaws.com/blocks.txt";
 }
