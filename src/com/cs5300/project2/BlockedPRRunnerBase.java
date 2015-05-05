@@ -14,7 +14,6 @@ import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 
-
 abstract public class BlockedPRRunnerBase {
 	public static enum CounterType {RESIDUAL, BLOCKITERATIONCOUNTER};
 	
@@ -27,7 +26,7 @@ abstract public class BlockedPRRunnerBase {
 			System.exit(-1);
 		}
 		
-		String inputFile = args[0];
+		String inputFolder = args[0];
 		String outputFolderName = args[1];
 		
 		List<Double> finalResidualValues = new ArrayList<Double>();
@@ -42,6 +41,8 @@ abstract public class BlockedPRRunnerBase {
 			SetMapperClass(job);
 			SetReducerClass(job);
 						
+			job.setJarByClass(PageRankCalculator.class);
+			
 			job.setMapOutputKeyClass(LongWritable.class);
 			job.setMapOutputValueClass(NodeWritable.class);
 			
@@ -49,9 +50,9 @@ abstract public class BlockedPRRunnerBase {
 			job.setOutputValueClass(Text.class);
 			
 			String outputFolder = outputFolderName + iteration;
-			FileInputFormat.addInputPath((JobConf) job.getConfiguration(), new Path(inputFile));
+			FileInputFormat.addInputPath((JobConf) job.getConfiguration(), new Path(inputFolder));
 			FileOutputFormat.setOutputPath((JobConf) job.getConfiguration(), new Path(outputFolder));
-			inputFile = outputFolder + "/part-r-00000";
+			inputFolder = outputFolder;
 			
 			exitCode = job.waitForCompletion(true) ? 0 : 1;
 			residualValue = (((double)(job.getCounters().findCounter(CounterType.RESIDUAL).getValue()))/Math.pow(10, 5)) / Constants.kNumNodes;

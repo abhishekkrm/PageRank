@@ -21,7 +21,7 @@ public class SingleNodeRunner {
 			System.exit(-1);
 		}
 		
-		String inputFile = args[0];
+		String inputFolder = args[0];
 		String outputFolderName = args[1];
 		
 		int exitCode = 0;
@@ -32,6 +32,8 @@ public class SingleNodeRunner {
 			job.setMapperClass(SingleNodeMapper.class);
 			job.setReducerClass(SingleNodeReducer.class);
 			
+			job.setJarByClass(PageRankCalculator.class);
+			
 			job.setMapOutputKeyClass(IntWritable.class);
 			job.setMapOutputValueClass(NodeWritable.class);
 			
@@ -39,9 +41,9 @@ public class SingleNodeRunner {
 			job.setOutputValueClass(Text.class);
 			
 			String outputFolder = outputFolderName + iteration;
-			FileInputFormat.addInputPath((JobConf) job.getConfiguration(), new Path(inputFile));
+			FileInputFormat.addInputPath((JobConf) job.getConfiguration(), new Path(inputFolder));
 			FileOutputFormat.setOutputPath((JobConf) job.getConfiguration(), new Path(outputFolder));
-			inputFile = outputFolder + "/part-r-00000";
+			inputFolder = outputFolder;
 			
 			exitCode = job.waitForCompletion(true) ? 0 : 1;
 			residualValue = (((double)(job.getCounters().findCounter(CounterType.RESIDUAL).getValue()))/Math.pow(10, 5))/Constants.kNumNodes;
