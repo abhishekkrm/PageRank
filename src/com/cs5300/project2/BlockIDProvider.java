@@ -31,15 +31,31 @@ public class BlockIDProvider {
 		}
 	}
 	
+	//Ref: https://gist.github.com/badboy/6267743
+	private static long Hash64Shift(long key) {
+		key = (~key) + (key << 21); 
+		key = key ^ (key >>> 24);
+		key = (key + (key << 3)) + (key << 8); 
+		key = key ^ (key >>> 14);
+		key = (key + (key << 2)) + (key << 4); 
+		key = key ^ (key >>> 28);
+		key = key + (key << 31);
+		return key;
+	}
+	
 	public static long BlockIDofNode(long inNodeID) {
-		if(mBlockIDMap == null) {
-			PopulateBlockIDmap();
-		}
-		
-		if(mBlockIDMap.containsKey(inNodeID)) {
-			return mBlockIDMap.get(inNodeID);
-		} else {
-			return mBlockIDMap.get(mBlockIDMap.lowerKey(inNodeID));
+		if(Constants.kUseRandomPartitioning) {
+			return (Hash64Shift(inNodeID) % Constants.kNumBlocks);
+		} else  {
+			if(mBlockIDMap == null) {
+				PopulateBlockIDmap();
+			}
+			
+			if(mBlockIDMap.containsKey(inNodeID)) {
+				return mBlockIDMap.get(inNodeID);
+			} else {
+				return mBlockIDMap.get(mBlockIDMap.lowerKey(inNodeID));
+			}
 		}
 	}
 }

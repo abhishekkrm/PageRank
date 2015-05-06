@@ -13,5 +13,7 @@ public class Constants {
 	public static int kSingleNodePRMaxIterations = 6;
 	public static int kInBlockMaxkIterations  = 15;
 	
+	public static boolean kUseRandomPartitioning = false;
+	
 	public static String kBlockFileURL = "http://edu-cornell-cs-cs5300s15-proj2.s3.amazonaws.com/blocks.txt";
 }

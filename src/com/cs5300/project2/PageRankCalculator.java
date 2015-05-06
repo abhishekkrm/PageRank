@@ -8,6 +8,10 @@ public class PageRankCalculator {
 			//new SingleNodeRunner().run(args);
 			new BlockedPRJacobiRunner().run(args);
 			//new BlockedPRGaussSeidelRunner().run(args);
+			
+			Constants.kUseRandomPartitioning = true;
+			//new BlockedPRJacobiRunner().run(args);
+			//new BlockedPRGaussSeidelRunner().run(args);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
