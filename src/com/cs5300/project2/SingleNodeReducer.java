@@ -27,7 +27,7 @@ protected void reduce(IntWritable key, Iterable<NodeWritable> values,
 	double residual = Math.abs(node.getCurrentPageRank() - nextPageRank)/nextPageRank;
 	
 	/* Update counter */
-	context.getCounter(SingleNodeRunner.CounterType.RESIDUAL).increment((long)(residual*Math.pow(10, 5)));
+	context.getCounter(SingleNodeRunner.CounterType.RESIDUAL).increment((long)(residual*Constants.kCounterMultiplier));
 	
 	/* Update page rank */
 	node.setCurrentPageRank(nextPageRank);

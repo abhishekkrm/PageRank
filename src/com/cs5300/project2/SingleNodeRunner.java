@@ -1,6 +1,8 @@
 package com.cs5300.project2;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -24,8 +26,11 @@ public class SingleNodeRunner {
 		String inputFolder = args[0];
 		String outputFolderName = args[1];
 		
+		List<Double> finalResidualValues = new ArrayList<Double>();
+		
 		int exitCode = 0;
 		double residualValue = 1.0;
+		
 		for(int iteration = 0; iteration < Constants.kSingleNodePRMaxIterations && residualValue >= Constants.kOverallResidualThreshold; ++iteration) {
 			Job job = Job.getInstance(new Configuration(), "single node page rank");
 				
@@ -46,10 +51,15 @@ public class SingleNodeRunner {
 			inputFolder = outputFolder;
 			
 			exitCode = job.waitForCompletion(true) ? 0 : 1;
-			residualValue = (((double)(job.getCounters().findCounter(CounterType.RESIDUAL).getValue()))/Math.pow(10, 5))/Constants.kNumNodes;
+			residualValue = (((double)(job.getCounters().findCounter(CounterType.RESIDUAL).getValue()))/Constants.kCounterMultiplier)/Constants.kNumNodes;
 			
-			System.out.print("Single Node PR: Residual Value for Iteration #" + iteration + "is: " + residualValue);
+			finalResidualValues.add(residualValue);
 		}
+		
+		for(int i = 0; i < finalResidualValues.size(); ++i) {
+			System.out.println("Single Node PR: Residual Value for Iteration #" + i + " is: " + finalResidualValues.get(i));
+		}
+		
 		return exitCode;
 	}
 }

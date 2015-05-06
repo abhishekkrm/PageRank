@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -12,7 +14,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 public class BlockedPRJacobiReducer extends Reducer<LongWritable, NodeWritable, NullWritable, Text>{
 
-	private void AddReverseEdge(HashMap<Integer, List<Integer>> inReverseEdgeMapping, int src, int dst) {
+	private void AddReverseEdge(Map<Integer, List<Integer>> inReverseEdgeMapping, int src, int dst) {
 		if(inReverseEdgeMapping.containsKey(dst) == false) {
 			inReverseEdgeMapping.put(dst, new ArrayList<Integer>());
 		}
@@ -22,9 +24,9 @@ public class BlockedPRJacobiReducer extends Reducer<LongWritable, NodeWritable, 
 	}
 	
 	protected double IterateBlockOnce(
-			HashMap<Integer, NodeWritable> inNodesInBlock, 
-			HashMap<Integer, Double> inIncomingProbMass, 
-			HashMap<Integer, List<Integer>> inReverseEdgeMapping) {
+			Map<Integer, NodeWritable> inNodesInBlock, 
+			Map<Integer, Double> inIncomingProbMass, 
+			Map<Integer, List<Integer>> inReverseEdgeMapping) {
 		HashMap<Integer, Double> nextPageRanks = new HashMap<Integer, Double>();
 		
 		double residual = 0.0;
@@ -58,9 +60,9 @@ public class BlockedPRJacobiReducer extends Reducer<LongWritable, NodeWritable, 
 		return (residual / inNodesInBlock.size());
 	}
 	
-	private void ComputeBlockPageRank(HashMap<Integer, NodeWritable> inNodesInBlock, 
-			HashMap<Integer, Double> inIncomingProbMass, 
-			HashMap<Integer, List<Integer>> inReverseEdgeMapping,
+	private void ComputeBlockPageRank(Map<Integer, NodeWritable> inNodesInBlock, 
+			Map<Integer, Double> inIncomingProbMass, 
+			Map<Integer, List<Integer>> inReverseEdgeMapping,
 			Reducer<LongWritable, NodeWritable, NullWritable, Text>.Context context) {
 		HashMap<Integer, Double> startPageRanks = new HashMap<Integer, Double>();
 		
@@ -79,7 +81,7 @@ public class BlockedPRJacobiReducer extends Reducer<LongWritable, NodeWritable, 
 		}
 		
 		/* Update hadoop counters */
-		context.getCounter(BlockedPRRunnerBase.CounterType.RESIDUAL).increment((long)(overallBlockResidual*Math.pow(10, 5)));
+		context.getCounter(BlockedPRRunnerBase.CounterType.RESIDUAL).increment((long)(overallBlockResidual*Constants.kCounterMultiplier));
 		context.getCounter(BlockedPRRunnerBase.CounterType.BLOCKITERATIONCOUNTER).increment(iterations);
 	}
 	
@@ -88,9 +90,9 @@ public class BlockedPRJacobiReducer extends Reducer<LongWritable, NodeWritable, 
 			Reducer<LongWritable, NodeWritable, NullWritable, Text>.Context context)
 			throws IOException, InterruptedException {
 		
-		HashMap<Integer, NodeWritable> nodesInBlock = new HashMap<Integer, NodeWritable>();
-		HashMap<Integer, Double> incomingProbMass = new HashMap<Integer, Double>();
-		HashMap<Integer, List<Integer>> reverseEdgeMapping = new HashMap<Integer, List<Integer>>();
+		Map<Integer, NodeWritable> nodesInBlock = new TreeMap<Integer, NodeWritable>();
+		Map<Integer, Double> incomingProbMass = new HashMap<Integer, Double>();
+		Map<Integer, List<Integer>> reverseEdgeMapping = new HashMap<Integer, List<Integer>>();
 		
 		for(NodeWritable n: values) {
 			if(n.getIsNode()) {

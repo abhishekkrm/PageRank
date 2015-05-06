@@ -55,7 +55,7 @@ abstract public class BlockedPRRunnerBase {
 			inputFolder = outputFolder;
 			
 			exitCode = job.waitForCompletion(true) ? 0 : 1;
-			residualValue = (((double)(job.getCounters().findCounter(CounterType.RESIDUAL).getValue()))/Math.pow(10, 5)) / Constants.kNumNodes;
+			residualValue = (((double)(job.getCounters().findCounter(CounterType.RESIDUAL).getValue()))/Constants.kCounterMultiplier) / Constants.kNumNodes;
 			
 			long totalIterrations = job.getCounters().findCounter(CounterType.BLOCKITERATIONCOUNTER).getValue();
 			double avgIterations = (double)totalIterrations/(double)Constants.kNumBlocks;

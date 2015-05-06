@@ -3,13 +3,14 @@ package com.cs5300.project2;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BlockedPRGaussSeidelReducer extends BlockedPRJacobiReducer {
 	@Override
 	protected double IterateBlockOnce(
-			HashMap<Integer, NodeWritable> inNodesInBlock,
-			HashMap<Integer, Double> inIncomingProbMass,
-			HashMap<Integer, List<Integer>> inReverseEdgeMapping) {
+			Map<Integer, NodeWritable> inNodesInBlock,
+			Map<Integer, Double> inIncomingProbMass,
+			Map<Integer, List<Integer>> inReverseEdgeMapping) {
 		HashMap<Integer, Double> nextPageRanks = new HashMap<Integer, Double>();
 		
 		double residual = 0.0;

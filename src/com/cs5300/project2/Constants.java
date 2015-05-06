@@ -7,6 +7,7 @@ public class Constants {
 	
 	public static double kInBlockResidualThreshold = 0.001f;
 	public static double kOverallResidualThreshold = 0.001f;
+	public static double kCounterMultiplier = Math.pow(10, 6);
 	
 	public static int kBlockedPRMaxIterations = 10;
 	public static int kSingleNodePRMaxIterations = 6;
