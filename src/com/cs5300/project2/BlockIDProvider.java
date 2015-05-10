@@ -31,16 +31,8 @@ public class BlockIDProvider {
 		}
 	}
 	
-	//Ref: https://gist.github.com/badboy/6267743
-	private static long Hash64Shift(long key) {
-		key = (~key) + (key << 21); 
-		key = key ^ (key >>> 24);
-		key = (key + (key << 3)) + (key << 8); 
-		key = key ^ (key >>> 14);
-		key = (key + (key << 2)) + (key << 4); 
-		key = key ^ (key >>> 28);
-		key = key + (key << 31);
-		return key;
+	private static long Hash64Shift(Long key) {
+		return key.hashCode();
 	}
 	
 	public static long BlockIDofNode(long inNodeID) {
